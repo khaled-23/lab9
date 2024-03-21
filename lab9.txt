@@ -1,0 +1,78 @@
+create database steam;
+
+create table account(
+    id int primary key,
+    username varchar(20) not null unique,
+    email varchar(20) not null unique ,
+    password varchar(20) not null,
+    create_date datetime default current_timestamp
+);
+
+
+create table profile(
+    id int primary key,
+    description varchar(200),
+    profilePicture varchar(50) not null default '/steam.png',
+    background varchar(50) not null default '/steamBackground.png',
+    account_id int,
+    foreign key (account_id) references account(id)
+);
+
+create table screenshots(
+    id int primary key ,
+    src varchar(50) not null unique,
+    visibility varchar(12) not null check ( visibility='public' or visibility='friends-only' or visibility='private' ),
+    account_id int,
+    foreign key (account_id) references account(id),
+    app_id int,
+    foreign key (app_id) references app(id)
+);
+
+create table profile_comments(
+    id int primary key ,
+    message varchar(200) not null,
+    profile_id int,
+    foreign key (profile_id) references profile(id),
+    account_id int,
+    comment_datetime datetime default current_timestamp,
+    foreign key (account_id) references account(id)
+);
+
+create table app(
+    id int primary key ,
+    appType varchar(8) not null check(appType='game' or appType='software'),
+    name varchar(50) not null unique,
+    price int not null check(price>0),
+    developer varchar(50) not null,
+    publisher varchar(50) not null,
+    publish_date datetime not null,
+    account_id int,
+    isPublished boolean not null default false,
+    foreign key (account_id) references account(id)
+);
+
+
+#
+create table app_review(
+    body varchar(1000) not null,
+    app_id int,
+    foreign key (app_id) references app(id),
+    account_id int,
+    foreign key (account_id) references account(id),
+    primary key (app_id,account_id)
+);
+
+create table guide_comments(
+    id int primary key ,
+    message varchar(200) not null,
+    app_id int,
+    foreign key (app_id) references app(id),
+    account_id int,
+    foreign key (account_id) references account(id)
+);
+
+insert into account value (0,'khaled17', 'khaled@gmail.com', 'pass123', current_timestamp);
+update account set email='k221@gmail.com' where id=0;
+delete from account where id=0;
+select * account;
+
